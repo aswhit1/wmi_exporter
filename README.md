@@ -9,25 +9,34 @@ Prometheus exporter for Windows machines, using the WMI (Windows Management Inst
 
 Name     | Description | Enabled by default
 ---------|-------------|--------------------
-ad | [Win32_PerfRawData_DirectoryServices_DirectoryServices](https://msdn.microsoft.com/en-us/library/ms803980.aspx) Active Directory |
-cpu | [Win32_PerfRawData_PerfOS_Processor](https://msdn.microsoft.com/en-us/library/aa394317(v=vs.90).aspx) metrics (cpu usage) | &#10003;
-cs | [Win32_ComputerSystem](https://msdn.microsoft.com/en-us/library/aa394102) metrics (system properties, num cpus/total memory) | &#10003;
-dns | [Win32_PerfRawData_DNS_DNS](https://technet.microsoft.com/en-us/library/cc977686.aspx) metrics (DNS Server) |
-hyperv | Performance counters for Hyper-V hosts |
-iis | [Win32_PerfRawData_W3SVC_WebService](https://msdn.microsoft.com/en-us/library/aa394345) IIS metrics |
-logical_disk | [Win32_PerfRawData_PerfDisk_LogicalDisk](https://msdn.microsoft.com/en-us/windows/hardware/aa394307(v=vs.71)) metrics (disk I/O) | &#10003;
-net | [Win32_PerfRawData_Tcpip_NetworkInterface](https://technet.microsoft.com/en-us/security/aa394340(v=vs.80)) metrics (network interface I/O) | &#10003;
-msmq | [Win32_PerfRawData_MSMQ_MSMQQueue](http://wutils.com/wmi/root/cimv2/win32_perfrawdata_msmq_msmqqueue/) metrics (MSMQ/journal count) |
-mssql | various [SQL Server Performance Objects](https://docs.microsoft.com/en-us/sql/relational-databases/performance-monitor/use-sql-server-objects#SQLServerPOs) metrics  |
-os | [Win32_OperatingSystem](https://msdn.microsoft.com/en-us/library/aa394239) metrics (memory, processes, users) | &#10003;
-process | [Win32_PerfRawData_PerfProc_Process](https://msdn.microsoft.com/en-us/library/aa394323(v=vs.85).aspx) metrics (per-process stats) |
-service | [Win32_Service](https://msdn.microsoft.com/en-us/library/aa394418(v=vs.85).aspx) metrics (service states) | &#10003;
-system | Win32_PerfRawData_PerfOS_System metrics (system calls) | &#10003;
-tcp | [Win32_PerfRawData_Tcpip_TCPv4](https://msdn.microsoft.com/en-us/library/aa394341(v=vs.85).aspx) metrics (tcp connections) |
-textfile | Read prometheus metrics from a text file | &#10003;
-vmware | Performance counters installed by the Vmware Guest agent |
+[ad](docs/collector.ad.md) | Active Directory Domain Services |
+[cpu](docs/collector.cpu.md) | CPU usage | &#10003;
+[cs](docs/collector.cs.md) | "Computer System" metrics (system properties, num cpus/total memory) | &#10003;
+[dns](docs/collector.dns.md) | DNS Server |
+[hyperv](docs/collector.hyperv.md) | Hyper-V hosts |
+[iis](docs/collector.iis.md) | IIS sites and applications |
+[logical_disk](docs/collector.logical_disk.md) | Logical disks, disk I/O | &#10003;
+[memory](docs/collector.memory.md) | Memory usage metrics |
+[msmq](docs/collector.msmq.md) | MSMQ queues |
+[mssql](docs/collector.mssql.md) | [SQL Server Performance Objects](https://docs.microsoft.com/en-us/sql/relational-databases/performance-monitor/use-sql-server-objects#SQLServerPOs) metrics  |
+[netframework_clrexceptions](docs/collector.netframework_clrexceptions.md) | .NET Framework CLR Exceptions |
+[netframework_clrinterop](docs/collector.netframework_clrinterop.md) | .NET Framework Interop Metrics |
+[netframework_clrjit](docs/collector.netframework_clrjit.md) | .NET Framework JIT metrics |
+[netframework_clrloading](docs/collector.netframework_clrloading.md) | .NET Framework CLR Loading metrics |
+[netframework_clrlocksandthreads](docs/collector.netframework_clrlocksandthreads.md) | .NET Framework locks and metrics threads |
+[netframework_clrmemory](docs/collector.netframework_clrmemory.md) |  .NET Framework Memory metrics |
+[netframework_clrremoting](docs/collector.netframework_clrremoting.md) | .NET Framework Remoting metrics |
+[netframework_clrsecurity](docs/collector.netframework_clrsecurity.md) | .NET Framework Security Check metrics |
+[net](docs/collector.net.md) | Network interface I/O | &#10003;
+[os](docs/collector.os.md) | OS metrics (memory, processes, users) | &#10003;
+[process](docs/collector.process.md) | Per-process metrics |
+[service](docs/collector.service.md) | Service state metrics | &#10003;
+[system](docs/collector.system.md) | System calls | &#10003;
+[tcp](docs/collector.tcp.md) | TCP connections |
+[textfile](docs/collector.textfile.md) | Read prometheus metrics from a text file | &#10003;
+[vmware](docs/collector.vmware.md) | Performance counters installed by the Vmware Guest agent |
 
-The HELP texts shows the WMI data source, please see MSDN documentation for details.
+See the linked documentation on each collector for more information on reported metrics, configuration settings and usage examples.
 
 ## Installation
 The latest release can be downloaded from the [releases page](https://github.com/martinlindhe/wmi_exporter/releases).
@@ -43,11 +52,17 @@ Name | Description
 `LISTEN_PORT` | The port to bind to. Defaults to 9182.
 `METRICS_PATH` | The path at which to serve metrics. Defaults to `/metrics`
 `TEXTFILE_DIR` | As the `--collector.textfile.directory` flag, provide a directory to read text files with metrics from
+`EXTRA_FLAGS` | Allows passing full CLI flags. Defaults to an empty string.
 
-Parameters are sent to the installer via `msiexec`. Example invocation:
+Parameters are sent to the installer via `msiexec`. Example invocations:
 
 ```powershell
 msiexec /i <path-to-msi-file> ENABLED_COLLECTORS=os,iis LISTEN_PORT=5000
+```
+
+Example service collector with a custom query.
+```powershell
+msiexec /i <path-to-msi-file> ENABLED_COLLECTORS=os,service --% EXTRA_FLAGS="--collector.service.services-where ""Name LIKE 'sql%'"""
 ```
 
 ## Roadmap

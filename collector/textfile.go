@@ -25,6 +25,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/dimchansky/utfbom"
 	"github.com/prometheus/client_golang/prometheus"
 	dto "github.com/prometheus/client_model/go"
 	"github.com/prometheus/common/expfmt"
@@ -236,7 +237,13 @@ fileLoop:
 			continue
 		}
 		var parser expfmt.TextParser
-		parsedFamilies, err := parser.TextToMetricFamilies(carriageReturnFilteringReader{r: file})
+		r, encoding := utfbom.Skip(carriageReturnFilteringReader{r: file})
+		if err := checkBOM(encoding); err != nil {
+			log.Errorf("Invalid file encoding detected in %s: %s - file must be UTF8", path, err.Error())
+			error = 1.0
+			continue
+		}
+		parsedFamilies, err := parser.TextToMetricFamilies(r)
 		file.Close()
 		if err != nil {
 			log.Errorf("Error parsing %q: %v", path, err)
@@ -278,4 +285,12 @@ fileLoop:
 		prometheus.GaugeValue, error,
 	)
 	return nil
+}
+
+func checkBOM(encoding utfbom.Encoding) error {
+	if encoding == utfbom.Unknown || encoding == utfbom.UTF8 {
+		return nil
+	}
+
+	return fmt.Errorf(encoding.String())
 }
