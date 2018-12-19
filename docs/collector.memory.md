@@ -16,15 +16,15 @@ Name | Description | Type | Labels
 -----|-------------|------|-------
 `wmi_cs_logical_processors` | Number of installed logical processors | gauge | None
 `wmi_cs_physical_memory_bytes` | Total installed physical memory | gauge | None
-`wmi_memory_available_bytes` | The amount of physical memory immediately available for allocation to a process or for system use. It is equal to the sum of memory assigned to the standby (cached), free and zero page lists | gauge | None
-`wmi_memory_cache_bytes` | _Not yet documented_ | gauge | None
-`wmi_memory_cache_bytes_peak` | _Not yet documented_ | gauge | None
+`wmi_memory_available_bytes` | Amount of physical memory in bytes available to processes running on the computer. This value is calculated by summing space on the Zeroed, Free, and Standby memory lists. Free memory is ready for use; Zeroed memory is pages of memory filled with zeros to prevent later processes from seeing data used by a previous process. Standby memory is memory removed from a process's working set (its physical memory) on route to disk, but is still available to be recalled. This property displays the last observed value only; it is not an average. | gauge | None
+`wmi_memory_cache_bytes` | Number of bytes currently being used by the file system cache. The file system cache is an area of physical memory that stores recently used pages of data for applications. The operating system continually adjusts the size of the cache, making it as large as it can while still preserving the minimum required number of available bytes for processes. This property displays the last observed value only; it is not an average. | gauge | None
+`wmi_memory_cache_bytes_peak` | Maximum number of CacheBytes after the system was last restarted. This value might be larger than the current size of the cache. CacheBytes is the sum of the System Cache Resident Bytes, System Driver Resident Bytes, System Code Resident Bytes, and Pool Paged Resident Bytes counters. This property displays the last observed value only; it is not an average. | gauge | None
 `wmi_memory_cache_faults_total` | _Not yet documented_ | gauge | None
-`wmi_memory_commit_limit` | _Not yet documented_ | gauge | None
-`wmi_memory_committed_bytes` | _Not yet documented_ | gauge | None
+`wmi_memory_commit_limit` | Amount of virtual memory, in bytes, that can be committed without having to extend the paging file(s). (Committed memory is physical memory for which space has been reserved on the disk paging files. Each logical disk drive has one paging file.) If the paging file(s) are be expanded, the CommitLimit value increases accordingly. This property displays the last observed value only; it is not an average. | gauge | None
+`wmi_memory_committed_bytes` | Amount of committed virtual memory, in bytes. Committed memory is physical memory for which space has been reserved on the disk paging file in case it must be written back to disk. This property displays the last observed value only; it is not an average. | gauge | None
 `wmi_memory_demand_zero_faults_total` | The number of zeroed pages required to satisfy faults. Zeroed pages, pages emptied of previously stored data and filled with zeros, are a security feature of Windows that prevent processes from seeing data stored by earlier processes that used the memory space | gauge | None
 `wmi_memory_free_and_zero_page_list_bytes` | _Not yet documented_ | gauge | None
-`wmi_memory_free_system_page_table_entries` | _Not yet documented_ | gauge | None
+`wmi_memory_free_system_page_table_entries` | Number of page table entries not being used by the system. This property displays the last observed value only; it is not an average. | gauge | None
 `wmi_memory_modified_page_list_bytes` | _Not yet documented_ | gauge | None
 `wmi_memory_page_faults_total` | _Not yet documented_ | gauge | None
 `wmi_memory_swap_page_reads_total` | Number of disk page reads (a single read operation reading several pages is still only counted once) | gauge | None
